@@ -7,6 +7,7 @@ mod 'puppetlabs-stdlib', '8.2.0'
 mod 'tracywebtech-pip', '1.3.4'
 mod 'puppetlabs-docker', '4.4.0'
 mod 'puppet-python', '6.2.1'
+mod 'puppetlabs-apt', '8.4.1'
 
 mod 'default_firewall',
     :git => 'https://github.com/scottongithub/puppetmod-default-firewall.git'
