@@ -10,6 +10,9 @@ mod 'puppet-python', '6.2.1'
 
 mod 'default_firewall',
     :git => 'https://github.com/scottongithub/puppetmod-default-firewall.git'
+
+mod 'privileges',
+    :git => 'https://github.com/scottongithub/puppetmod-privileges.git'
 # Modules from the Puppet Forge
 # Versions should be updated to be the latest at the time you start
 #mod 'puppetlabs/inifile', '5.0.1'
