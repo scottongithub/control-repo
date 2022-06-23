@@ -1,2 +1,84 @@
----
-message: "This node is using common data"
+
+default_settings::packages:
+- iftop
+- iotop
+- net-tools
+- traceroute
+- tree
+
+ntp::servers:
+- 0.pool.ntp.org
+- 1.pool.ntp.org
+- 2.pool.ntp.org
+
+# Inbound ssh will be allowed from here
+default_settings::management_source_ip:
+  - '192.168.122.0/24'
+
+
+default_settings::web_server_address: '192.168.122.64'
+# ssh_algorithm and ssh_key will automatically be retrieved from github
+# via ../scripts/get_ssh_keys_from_github.py running on puppetserver
+# leave github_username blank to bypass lookup
+default_settings::web_server_admins:
+  web-admin-1:
+    name: web-admin-03
+    github_username: scottongithub
+    ssh_algorithm:
+    ssh_key:
+  web-admin-2:
+    name: web-admin-04
+    github_username: scottongithub
+    ssh_algorithm:
+    ssh_key:
+
+default_settings::web_server_firewall:
+  rule-100:
+    comment: '100 Allow inbound WEB'
+    proto: tcp
+    dport: 80
+    source: 0.0.0.0/0
+    action: accept
+  rule-101:
+    comment: '101 Allow inbound Postgres'
+    proto: tcp
+    dport: 5432
+    source: "%{lookup('default_settings::web_server_address')}"
+    action: accept
+
+
+default_settings::app_server_address: '192.168.122.65'
+# ssh_algorithm and ssh_key will automatically be retrieved from github
+# via ../scripts/get_ssh_keys_from_github.py running on puppetserver
+# leave github_username blank to bypass lookup
+default_settings::app_server_admins:
+  app-admin-1:
+    name: app-admin-01
+    github_username: scottongithub
+    ssh_algorithm:
+    ssh_key:
+  app-admin-2:
+    name: app-admin-02
+    github_username:
+    ssh_algorithm:
+    ssh_key:
+
+default_settings::app_server_firewall:
+  rule-100:
+    comment: '100 Allow inbound Django'
+    proto: tcp
+    dport: 8000
+    source: "%{lookup('default_settings::web_server_address')}"
+    action: accept
+  rule-101:
+    comment: '101 Allow inbound Postgres'
+    proto: tcp
+    dport: 5432
+    source: "%{lookup('default_settings::web_server_address')}"
+    action: accept
+
+lookup_options:
+  sudo::configs:
+    merge:
+      strategy: deep
+      merge_hash_arrays: true

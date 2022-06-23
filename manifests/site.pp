@@ -1,31 +1,155 @@
-## site.pp ##
+include ntp
+include sudo
+package { lookup("default_settings::packages"):
+    ensure => installed,
+}
 
-# This file (./manifests/site.pp) is the main entry point
-# used when an agent connects to a master and asks for an updated configuration.
-# https://puppet.com/docs/puppet/latest/dirs_manifest.html
-#
-# Global objects like filebuckets and resource defaults should go in this file,
-# as should the default node definition if you want to use it.
+node server {
+  # Gets ssh keys from GitHub and inserts them into data/common.yaml
+  exec { 'python3 /etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py':
+     cwd     => '/etc/puppetlabs/code/environments/production/',
+     path    => ['/usr/bin', '/usr/sbin',],
+  }
+}
 
-## Active Configurations ##
 
-# Disable filebucket by default for all File resources:
-# https://github.com/puppetlabs/docs-archive/blob/master/pe/2015.3/release_notes.markdown#filebucket-resource-no-longer-created-by-default
-File { backup => false }
+node web-server-01 {
+  $server_admins = lookup("default_settings::web_server_admins")
+  $server_admins.each |$record| {
+    $server_admin = $record[1]
+    $admin_name = $server_admin[name]
+    user { $admin_name:
+      name => $admin_name,
+      ensure => present,
+      managehome => true,
+      home => "/home/$admin_name",
+      purge_ssh_keys => true,
+      shell => '/bin/bash'
+    }
+    sudo::conf { $server_admin[name]:
+      content  => "$admin_name ALL=(ALL) NOPASSWD: ALL",
+    }
+    ssh_authorized_key { $server_admin[name]:
+      name     => $server_admin[name],
+      ensure   => present,
+      key      => $server_admin[ssh_key],
+      type     => $server_admin[ssh_algorithm],
+      user     => $server_admin[name],
+    }
+    $github_username = $server_admin[github_username]
+    $ssh_key = $server_admin[ssh_key]
+    notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+  }
 
-## Node Definitions ##
+  Firewall {
+  before  => Class['default_firewall::post'],
+  require => Class['default_firewall::pre'],
+  }
+  class { ['default_firewall::pre', 'default_firewall::post']: }
+  firewallchain { 'INPUT:filter:IPv4':
+    purge => true,
+    ignore => [
+      '-j fail2ban-ssh', # ignore the fail2ban jump rule
+      '--comment "[^"]*(?i:ignore)[^"]*"', # ignore any rules with "ignore" (case insensitive) in the comment in the rule
+    ],
+  }
+  $firewall_rules = lookup("default_settings::web_server_firewall")
+  $firewall_rules.each |$record|{
+    $firewall_rule = $record[1]
+    firewall { $firewall_rule[comment]:
+      proto => $firewall_rule[proto],
+      dport => $firewall_rule[dport],
+      source => $firewall_rule[source],
+      action => $firewall_rule[action],
+    }
+  }
+  host { 'app-server':
+    name => 'app-server',
+    ip => lookup("default_settings::app_server_address"),
+  }
 
-# The default node definition matches any node lacking a more specific node
-# definition. If there are no other node definitions in this file, classes
-# and resources declared in the default node definition will be included in
-# every node's catalog.
-#
-# Note that node definitions in this file are merged with node data from the
-# Puppet Enterprise console and External Node Classifiers (ENC's).
-#
-# For more on node definitions, see: https://puppet.com/docs/puppet/latest/lang_node_definitions.html
-node default {
-  # This is where you can declare classes for all nodes.
-  # Example:
-  #   class { 'my_class': }
+  include nginx
+  nginx::resource::server { lookup("default_settings::web_server_address"):
+    listen_port => 80,
+    proxy      => 'http://app-server:8000',
+  }
+
+}
+
+node app-server-01 {
+  $server_admins = lookup(default_settings::app_server_admins)
+  $server_admins.each |$record| {
+    $server_admin = $record[1]
+    $admin_name = $server_admin[name]
+    user { $admin_name:
+      name => $admin_name,
+      ensure => present,
+      managehome => true,
+      home => "/home/$admin_name",
+      purge_ssh_keys => true,
+      shell => '/bin/bash'
+    }
+    sudo::conf { $admin_name:
+      content  => "$admin_name ALL=(ALL) NOPASSWD: ALL",
+    }
+    ssh_authorized_key { $admin_name:
+      name     => $server_admin[name],
+      ensure   => present,
+      key      => $server_admin[ssh_key],
+      type     => $server_admin[ssh_algorithm],
+      user     => $server_admin[name],
+    }
+    $github_username = $server_admin[github_username]
+    $ssh_key = $server_admin[ssh_key]
+    notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+  }
+
+  Firewall {
+    before  => Class['default_firewall::post'],
+    require => Class['default_firewall::pre'],
+  }
+  class { ['default_firewall::pre', 'default_firewall::post']: }
+  firewallchain { 'INPUT:filter:IPv4':
+    purge => true,
+    ignore => [
+      '-j fail2ban-ssh', # ignore the fail2ban jump rule
+      '--comment "[^"]*(?i:ignore)[^"]*"', # ignore any rules with "ignore" (case insensitive) in the comment in the rule
+    ],
+  }
+  $firewall_rules = lookup(default_settings::app_server_firewall)
+  $firewall_rules.each |$record|{
+    $firewall_rule = $record[1]
+    firewall { $firewall_rule[comment]:
+      proto => $firewall_rule[proto],
+      dport => $firewall_rule[dport],
+      source => $firewall_rule[source],
+      action => $firewall_rule[action],
+    }
+  }
+
+  host { 'web-server':
+    name => 'web-server',
+    ip => lookup("default_settings::web_server_address"),
+  }
+
+  file { '/var/www':
+    path => '/var/www',
+    ensure => 'directory',
+  }
+
+  class { 'python':
+    version    => 'system',
+    pip        => 'present',
+    dev        => 'present',
+    }
+  python::pyvenv { "/var/www/app-01":
+    ensure => present,
+    version => 'system',
+    venv_dir => '/var/www/app-01',
+    owner => 'root'
+  }
+  python::pip { ['django' ]:
+    virtualenv => '/var/www/app-01',
+  }
+
 }
