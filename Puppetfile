@@ -6,7 +6,7 @@ mod 'saz-sudo', '7.0.2'
 mod 'puppetlabs-stdlib', '8.2.0'
 mod 'tracywebtech-pip', '1.3.4'
 mod 'puppetlabs-docker', '4.4.0'
-
+mod 'puppet-python', '6.2.1'
 # Modules from the Puppet Forge
 # Versions should be updated to be the latest at the time you start
 #mod 'puppetlabs/inifile', '5.0.1'
