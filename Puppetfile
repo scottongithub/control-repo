@@ -1,4 +1,11 @@
 forge 'https://forge.puppet.com'
+mod 'puppetlabs-firewall', '3.5.0'
+mod 'puppet-nginx', '3.3.0'
+mod 'puppetlabs-ntp', '9.1.1'
+mod 'saz-sudo', '7.0.2'
+mod 'puppetlabs-stdlib', '8.2.0'
+mod 'tracywebtech-pip', '1.3.4'
+mod 'puppetlabs-docker', '4.4.0'
 
 # Modules from the Puppet Forge
 # Versions should be updated to be the latest at the time you start
