@@ -26,10 +26,10 @@ node web-server-01 {
       purge_ssh_keys => true,
       shell => '/bin/bash'
     }
-    sudo::conf { $server_admin[name]:
+    sudo::conf { $admin_name:
       content  => "$admin_name ALL=(ALL) NOPASSWD: ALL",
     }
-    ssh_authorized_key { $server_admin[name]:
+    ssh_authorized_key { $admin_name:
       name     => $server_admin[name],
       ensure   => present,
       key      => $server_admin[ssh_key],
@@ -102,9 +102,12 @@ node app-server-01 {
       type     => $server_admin[ssh_algorithm],
       user     => $server_admin[name],
     }
-    $github_username = $server_admin[github_username]
-    $ssh_key = $server_admin[ssh_key]
-    notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+
+    if $server_admin[github_username] {
+      $github_username = $server_admin[github_username]
+      $ssh_key = $server_admin[ssh_key]
+      notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+    }
   }
 
   Firewall {
