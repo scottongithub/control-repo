@@ -65,15 +65,15 @@ node web-server-01 {
       action => $firewall_rule[action],
     }
   }
-  host { 'app-server':
-    name => 'app-server',
+  host { 'app-server-01':
+    name => 'app-server-01',
     ip => lookup("default_settings::app_server_address"),
   }
 
   include nginx
   nginx::resource::server { lookup("default_settings::web_server_address"):
     listen_port => 80,
-    proxy      => 'http://app-server:8000',
+    proxy      => 'http://app-server-01:8000',
   }
 
 }
@@ -131,8 +131,8 @@ node app-server-01 {
     }
   }
 
-  host { 'web-server':
-    name => 'web-server',
+  host { 'web-server-01':
+    name => 'web-server-01',
     ip => lookup("default_settings::web_server_address"),
   }
 
