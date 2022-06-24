@@ -6,8 +6,8 @@ package { lookup("default_settings::packages"):
 
 node puppet-server {
   # Gets ssh keys from GitHub and inserts them into data/common.yaml
-  exec { 'python3 /etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py':
-     cwd     => '/etc/puppetlabs/code/environments/production/',
+  exec { "python3 /etc/puppetlabs/code/environments/${environment}/scripts/get_ssh_keys_from_github.py":
+     cwd     => "/etc/puppetlabs/code/environments/${environment}/",
      path    => ['/usr/bin', '/usr/sbin',],
   }
 }
@@ -36,8 +36,7 @@ node web-server-01 {
       type     => $server_admin[ssh_algorithm],
       user     => $server_admin[name],
     }
-
-    if $server_admin[github_username] {
+    if $server_admin[github_username] != undef {
       $github_username = $server_admin[github_username]
       $ssh_key = $server_admin[ssh_key]
       notify {"$admin_name has $github_username for github username and key is $ssh_key":}
@@ -102,7 +101,6 @@ node app-server-01 {
       type     => $server_admin[ssh_algorithm],
       user     => $server_admin[name],
     }
-
     if $server_admin[github_username] != undef {
       $github_username = $server_admin[github_username]
       $ssh_key = $server_admin[ssh_key]
