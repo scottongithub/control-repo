@@ -36,9 +36,11 @@ node web-server-01 {
       type     => $server_admin[ssh_algorithm],
       user     => $server_admin[name],
     }
-    $github_username = $server_admin[github_username]
-    $ssh_key = $server_admin[ssh_key]
-    notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+    if $server_admin[github_username]{
+      $github_username = $server_admin[github_username]
+      $ssh_key = $server_admin[ssh_key]
+      notify {"$admin_name has $github_username for github username and key is $ssh_key":}
+    }
   }
 
   Firewall {
