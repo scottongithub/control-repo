@@ -16,7 +16,7 @@ default_settings::management_source_ip:
   - '192.168.122.0/24'
 
 
-default_settings::web_server_address: %{::networking.ip}
+default_settings::web_server_address: "%{::networking.ip}"
 # ssh_algorithm and ssh_key will automatically be retrieved from github
 # via ../scripts/get_ssh_keys_from_github.py running on puppetserver
 # leave github_username blank to bypass lookup
