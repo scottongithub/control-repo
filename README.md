@@ -12,4 +12,4 @@ Logic and data are separated as much as practical, with data being stored in $en
 
 
 
-<img src="https://user-images.githubusercontent.com/21364725/175784240-5d9af1b3-7c00-479a-848e-3801eac4c668.png" width="400" />
+<img src="https://user-images.githubusercontent.com/21364725/175784240-5d9af1b3-7c00-479a-848e-3801eac4c668.png" width="500" />
