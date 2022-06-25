@@ -9,4 +9,5 @@ A control repository based on Puppetlabs control-repo template. It sets up a bas
 Logic and data are separated as much as possible, with data being stored in $environment/data/common.yaml and logic at $environment/manifests/site.pp
 
 
-![control_repo](https://user-images.githubusercontent.com/21364725/175783269-c7800a32-bf00-4c01-9d72-4b883ba452c9.png)
+
+![control_repo](https://user-images.githubusercontent.com/21364725/175784240-5d9af1b3-7c00-479a-848e-3801eac4c668.png)
