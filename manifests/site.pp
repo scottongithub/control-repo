@@ -74,6 +74,7 @@ node web-server-01 {
   nginx::resource::server { lookup("default_settings::web_server_address"):
     listen_port => 80,
     proxy      => 'http://app-server-01:8000',
+    proxy_cache => 'STATIC',
   }
 
 }
