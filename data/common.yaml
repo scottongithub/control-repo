@@ -39,12 +39,7 @@ default_settings::web_server_firewall:
     dport: 80
     source: 0.0.0.0/0
     action: accept
-  rule-101:
-    comment: '101 Allow inbound Postgres'
-    proto: tcp
-    dport: 5432
-    source: "%{lookup('default_settings::web_server_address')}"
-    action: accept
+
 
 
 default_settings::app_server_address: '192.168.122.65'
@@ -65,13 +60,13 @@ default_settings::app_server_admins:
 
 default_settings::app_server_firewall:
   rule-100:
-    comment: '100 Allow inbound Django'
+    comment: '100 Allow inbound web to Django'
     proto: tcp
     dport: 8000
     source: "%{lookup('default_settings::web_server_address')}"
     action: accept
   rule-101:
-    comment: '101 Allow inbound Postgres'
+    comment: '101 Allow inbound Postgres - not used'
     proto: tcp
     dport: 5432
     source: "%{lookup('default_settings::web_server_address')}"
