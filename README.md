@@ -6,7 +6,7 @@ A control repository based on Puppetlabs control-repo template. It sets up a bas
 - Can use github as an ssh keyserver for local admin accounts. Configurable as github_username in $environment/data/common.yaml
 
 # Notes
-Logic and data are separated as much as possible, with data being stored in $environment/data/common.yaml and logic at $environment/manifests/site.pp
+Logic and data are separated as much as practical, with data being stored in $environment/data/common.yaml and logic at $environment/manifests/site.pp
 
 
 

@@ -22,12 +22,12 @@ default_settings::web_server_address: '192.168.122.64'
 # leave github_username blank to bypass lookup
 default_settings::web_server_admins:
   web-admin-1:
-    name: web-admin-03
+    name: web-admin-01
     github_username: scottongithub
     ssh_algorithm:
     ssh_key:
   web-admin-2:
-    name: web-admin-04
+    name: web-admin-02
     github_username: scottongithub
     ssh_algorithm:
     ssh_key:
@@ -59,7 +59,7 @@ default_settings::app_server_admins:
     ssh_key:
   app-admin-2:
     name: app-admin-02
-    github_username:
+    github_username: scottongithub
     ssh_algorithm:
     ssh_key:
 
