@@ -6,6 +6,7 @@ r10k::sources:
     prefix: false
     invalid_branches: 'error'
 r10k::postrun: ['/usr/bin/env', 'python3', '/etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py']
+r10k::cachedir: '~/r10k/cache'
 
 default_settings::packages:
 - iftop
