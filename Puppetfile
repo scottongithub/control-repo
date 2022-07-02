@@ -9,6 +9,7 @@ mod 'puppetlabs-docker', '4.4.0'
 mod 'puppet-python', '6.2.1'
 mod 'puppetlabs-apt', '8.4.1'
 mod 'puppetlabs-concat', '7.2.0'
+mod 'puppet-r10k', '10.2.0'
 
 mod 'default_firewall',
     :git => 'https://github.com/scottongithub/puppetmod-default-firewall.git'

@@ -4,14 +4,6 @@ package { lookup("default_settings::packages"):
     ensure => installed,
 }
 
-node puppet-server {
-  # Gets ssh keys from GitHub and inserts them into data/common.yaml
-  exec { "python3 /etc/puppetlabs/code/environments/${environment}/scripts/get_ssh_keys_from_github.py":
-     cwd     => "/etc/puppetlabs/code/environments/${environment}/",
-     path    => ['/usr/bin', '/usr/sbin',],
-  }
-}
-
 
 node web-server-01 {
   $server_admins = lookup("default_settings::web_server_admins")
