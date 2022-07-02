@@ -4,7 +4,17 @@ package { lookup("default_settings::packages"):
     ensure => installed,
 }
 
-node default {}
+node puppet-server {
+  class { 'r10k':
+  sources => {
+    'github' => {
+      'remote'  => lookup("r10k_defaults::sources:github:remote"),
+      'basedir' => lookup("r10k_defaults::sources:github:basedir"),
+      'prefix'  => true,
+    },
+  },
+}
+}
 
 node web-server-01 {
   $server_admins = lookup("default_settings::web_server_admins")

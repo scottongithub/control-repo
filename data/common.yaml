@@ -1,11 +1,11 @@
 ---
-r10k::sources:
+r10k_defaults::sources:
   github:
     remote: 'git@github.com:scottongithub/control-repo.git'
     basedir: '/etc/puppetlabs/code/environments/'
     prefix: false
     invalid_branches: 'error'
-r10k::postrun: ['/usr/bin/env', 'python3', '/etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py']
+r10k_defaults::postrun: ['/usr/bin/env', 'python3', '/etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py']
 
 default_settings::packages:
 - iftop
