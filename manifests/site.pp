@@ -4,6 +4,7 @@ package { lookup("default_settings::packages"):
     ensure => installed,
 }
 
+node default {}
 
 node web-server-01 {
   $server_admins = lookup("default_settings::web_server_admins")
