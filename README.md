@@ -2,11 +2,12 @@
 
 # Overview
 A control repository based on Puppetlabs control-repo template. It sets up a basic web-app per the diagram below. The git branches will translate into environments as /etc/puppetlabs/code/environments/$gitbranch for each branch
-# Features
-- Can use github as an ssh keyserver for local admin accounts. Configurable as github_username in $environment/data/common.yaml
+# Usage
+See bootstrapping folder
 
 # Notes
 Logic and data are separated as much as practical, with data being stored in $environment/data/common.yaml and logic at $environment/manifests/site.pp
+- Can use github as an ssh keyserver for local admin accounts. Configurable as github_username in $environment/data/common.yaml
 
 
 
