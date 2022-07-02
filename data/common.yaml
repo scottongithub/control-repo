@@ -1,3 +1,11 @@
+pe_r10k::sources:
+  github:
+    remote: 'git@github.com:scottongithub/control-repo.git'
+    basedir: '/etc/puppetlabs/code/environments/'
+    prefix: false
+    invalid_branches: 'error'
+    postrun: ['python3 /etc/puppetlabs/code/environments/production/scripts/get_ssh_keys_from_github.py']
+
 
 default_settings::packages:
 - iftop
@@ -20,6 +28,8 @@ default_settings::web_server_address: '192.168.122.64'
 # ssh_algorithm and ssh_key will automatically be retrieved from github
 # via ../scripts/get_ssh_keys_from_github.py running on puppetserver
 # leave github_username blank to bypass lookup
+
+
 default_settings::web_server_admins:
   web-admin-1:
     name: web-admin-01
