@@ -5,14 +5,12 @@ package { lookup("default_settings::packages"):
 }
 
 node puppet-server {
-  include r10k
   file { 'r10k cache':
     path => lookup("r10k::cachedir"),
     ensure => 'directory',
   }
-
+  include r10k
 }
-
 
 node web-server-01 {
   $server_admins = lookup("default_settings::web_server_admins")
@@ -76,7 +74,6 @@ node web-server-01 {
     listen_port => 80,
     proxy      => 'http://app-server-01:8000',
   }
-
 }
 
 node app-server-01 {
@@ -156,5 +153,4 @@ node app-server-01 {
   python::pip { ['django' ]:
     virtualenv => '/var/www/app-01',
   }
-
 }

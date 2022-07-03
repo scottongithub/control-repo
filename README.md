@@ -1,15 +1,17 @@
 
 
 # Overview
-A control repository based on Puppetlabs control-repo template. It sets up a basic web-app per the diagram below. The git branches will translate into environments as /etc/puppetlabs/code/environments/$gitbranch for each branch
+A control repository based on Puppetlabs' control-repo template. This project sets up a basic web-app per the diagram below. Per r10k defaults, the git branches will translate into environments as /etc/puppetlabs/code/environments/$gitbranch for each branch
+
 # Usage
-See bootstrapping folder
+The three nodes can be bootstrapped and run using the commands listed in docs/bootstrap.txt
 
 # Notes
-Logic and data are separated as much as practical, with data being stored in $environment/data/common.yaml and logic at $environment/manifests/site.pp
+- Data is stored in $environment/data/common.yaml (managed by Hiera) and logic is in $environment/manifests/site.pp
+
 - Can use github as an ssh keyserver for local admin accounts. Configurable as github_username in $environment/data/common.yaml
 
-
+- There is no automation (e.g. cron job) for r10k deploy - it is done manually (via `r10k deploy environment`) 
 
 
 <p align="center">

@@ -1,0 +1,45 @@
+Puppet server:
+# The below install is specific to Ubuntu Focal - for other distros see: https://puppet.com/docs/puppet/7/install_puppet.html
+wget https://apt.puppet.com/puppet7-release-focal.deb
+sudo dpkg -i puppet7-release-focal.deb
+sudo apt-get update
+sudo apt install puppetserver r10k -y
+sudo ufw enable
+sudo ufw allow from any to any port 8140
+sudo ufw allow from <management IP> to any proto tcp port 22
+sudo echo "127.0.0.1	localhost  puppet" >> /etc/hosts
+cd /etc/puppetlabs/code/environments && mkdir production
+git clone --depth=1 git@github.com:scottongithub/control-repo.git production
+rm -rf ./production/.git*
+rm -rf ./production/docs
+systemctl start puppetserver
+systemctl enable puppetserver
+sudo r10k puppetfile install
+sudo /opt/puppetlabs/bin/puppet resource service puppet ensure=running enable=true
+sudo /opt/puppetlabs/bin/puppet agent --test #this will build /etc/puppetlabs/r10k/r10k.yaml
+sudo r10k deploy environment
+
+Puppet clients:
+# The below install is specific to Ubuntu Focal - for other distros see: https://puppet.com/docs/puppet/7/install_puppet.html
+wget https://apt.puppet.com/puppet7-release-focal.deb
+sudo dpkg -i puppet7-release-focal.deb
+sudo apt-get update
+sudo apt install puppet -y
+sudo echo "<puppet-server-IP>  puppet puppetserver  puppet-server" >> /etc/hosts
+sudo /opt/puppetlabs/bin/puppet resource service puppet ensure=running enable=true
+
+Puppet server:
+sudo /opt/puppetlabs/bin/puppetserver ca list
+sudo /opt/puppetlabs/bin/puppetserver ca sign --certname <puppet-client>
+
+Puppet clients:
+sudo /opt/puppetlabs/bin/puppet agent --test
+
+
+Application server (web server/proxy is managed entirely by Puppet):
+sudo chmod -R +w /var/www
+cd /var/www && \
+django-admin startproject app-01
+
+. /var/www/app-01/bin/activate && \
+python /var/www/app-01/manage.py runserver 192.168.122.65:8000

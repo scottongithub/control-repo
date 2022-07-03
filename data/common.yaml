@@ -15,22 +15,14 @@ default_settings::packages:
 - traceroute
 - tree
 
-ntp::servers:
-- 0.pool.ntp.org
-- 1.pool.ntp.org
-- 2.pool.ntp.org
-
 # Inbound ssh will be allowed from here
 default_settings::management_source_ip:
   - '192.168.122.0/24'
-
 
 default_settings::web_server_address: '192.168.122.64'
 # ssh_algorithm and ssh_key will automatically be retrieved from github
 # via ../scripts/get_ssh_keys_from_github.py running on puppetserver
 # leave github_username blank to bypass lookup
-
-
 default_settings::web_server_admins:
   web-admin-1:
     name: web-admin-01
@@ -77,11 +69,16 @@ default_settings::app_server_firewall:
     source: "%{lookup('default_settings::web_server_address')}"
     action: accept
   rule-101:
-    comment: '101 Allow inbound Postgres - not used'
+    comment: '101 Allow inbound Postgres - NOT USED'
     proto: tcp
     dport: 5432
     source: "%{lookup('default_settings::web_server_address')}"
     action: accept
+
+ntp::servers:
+- 0.pool.ntp.org
+- 1.pool.ntp.org
+- 2.pool.ntp.org
 
 lookup_options:
   sudo::configs:
