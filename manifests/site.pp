@@ -6,6 +6,11 @@ package { lookup("default_settings::packages"):
 
 node puppet-server {
   include r10k
+  file { 'r10k cache':
+    path => lookup("r10k::cachedir"),
+    ensure => 'directory',
+  }
+
 }
 
 
